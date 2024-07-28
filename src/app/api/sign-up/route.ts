@@ -7,7 +7,9 @@ import bcrypt from "bcryptjs";
 export async function POST(request: Request) {
   await dbConnect();
   try {
-    const { username, email, password } = request.json();
+    console.log("hi1");
+
+    const { username, email, password } = await request.json();
 
     const UserExistByUsername = await UserModel.findOne({
       username,
@@ -20,12 +22,15 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
     const UserExistByEmail = await UserModel.findOne({ email });
     const verificationCode = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
 
+    console.log("hi");
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("hi");
     const expiryDate = new Date();
     expiryDate.setHours(expiryDate.getHours() + 1);
 
@@ -39,7 +44,7 @@ export async function POST(request: Request) {
       UserExistByEmail.verifyCode = verificationCode;
       UserExistByEmail.password = hashedPassword;
       UserExistByEmail.verifyCodeExpiry = expiryDate;
-      UserExistByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000); 
+      UserExistByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);
 
       UserExistByEmail.save();
     } else {
@@ -57,16 +62,21 @@ export async function POST(request: Request) {
     }
 
     const EmailResponse = await sendVerificationEmail(
-      email,
       username,
+      email,
       verificationCode
     );
+    
 
     if (!EmailResponse.success)
       return Response.json(
         { success: "false", message: EmailResponse.message },
         { status: 500 }
       );
+    else{
+      console.log(EmailResponse);
+      
+    }
 
     return Response.json(
       { success: "true", message: "User registered successfully!!" },
