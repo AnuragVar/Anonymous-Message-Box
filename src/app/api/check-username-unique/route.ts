@@ -22,14 +22,18 @@ export async function GET(request: Request) {
   await dbConnect();
   try {
     const { searchParams } = new URL(request.url);
+    // console.log(searchParams);
+    // console.log('hi');
+    
+
     const queryParams = {
       username: searchParams.get("username"),
     };
-    console.log(queryParams.username);
+    // console.log(queryParams.username);
 
     const result = UsernamequerySchema.safeParse(queryParams);
 
-    console.log(result);
+    // console.log(result);
 
     if (!result.success) {
       const usernameErrors = result.error.format().username?._errors || [];
@@ -71,7 +75,7 @@ export async function GET(request: Request) {
     return Response.json(
       {
         success: "true",
-        message: "username is unique",
+        message: "Username is unique",
       },
       {
         status: 200,
@@ -82,7 +86,7 @@ export async function GET(request: Request) {
     return Response.json(
       {
         success: "false",
-        message: "Error checking username uniqueness",
+        message: "Error while checking uniqueness of username",
       },
       {
         status: 500,
