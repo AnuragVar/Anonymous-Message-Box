@@ -41,17 +41,10 @@ export default function SendMessage() {
   const params = useParams<{ username: string }>();
   const username = params.username;
 
-  const {
-    complete,
-    completion,
-    isLoading: isSuggestLoading,
-    error,
-  } = useCompletion({
-    api: "/api/suggest-messages",
-    initialCompletion: initialMessageString,
-  });
+ 
   const [suggestions, setSuggestions] = useState(initialMessageString);
-
+  const [error,setError] = useState("");
+  const [isLoadingSuggestion,setIsLoadingSuggestion] = useState(false);
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema),
   });
@@ -92,13 +85,19 @@ export default function SendMessage() {
 
   const fetchSuggestedMessages = async () => {
     try {
+      setIsLoadingSuggestion(true);
+      setError("");
       const response = await axios.post("/api/suggest-messages");
       setSuggestions(response.data.data);
 
       // Handle the received data (e.g., update state, display on UI)
     } catch (error) {
+      setError("Error fetching messages");
       console.error("Error fetching messages:", error);
       // Handle error appropriately (e.g., show error message to user)
+    }
+    finally{
+      setIsLoadingSuggestion(false);
     }
   };
 
@@ -146,7 +145,7 @@ export default function SendMessage() {
           <Button
             onClick={fetchSuggestedMessages}
             className="my-4"
-            disabled={isSuggestLoading}
+            disabled={isLoadingSuggestion}
           >
             Suggest Messages
           </Button>
@@ -158,7 +157,7 @@ export default function SendMessage() {
           </CardHeader>
           <CardContent className="flex flex-col space-y-4">
             {error ? (
-              <p className="text-red-500">{error.message}</p>
+              <p className="text-red-500">{error}</p>
             ) : (
               suggestions.map((message, index) => (
                 <Button
