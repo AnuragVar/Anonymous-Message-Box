@@ -40,6 +40,7 @@ function UserDashboard() {
     setIsSwitchLoading(true);
     try {
       const response = await axios.get<ApiResponse>("/api/accept-messages");
+
       setValue("acceptMessages", response.data.isAcceptingMessages);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
@@ -61,6 +62,7 @@ function UserDashboard() {
       setIsSwitchLoading(false);
       try {
         const response = await axios.get<ApiResponse>("/api/get-messages");
+
         setMessages(response.data.messages || []);
         if (refresh) {
           toast({
@@ -70,6 +72,7 @@ function UserDashboard() {
         }
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
+
         toast({
           title: "Error",
           description:
@@ -97,15 +100,17 @@ function UserDashboard() {
   const handleSwitchChange = async () => {
     try {
       const response = await axios.post<ApiResponse>("/api/accept-messages", {
-        acceptMessages: !acceptMessages,
+        acceptMessages: Boolean(!acceptMessages),
       });
-      setValue("acceptMessages", !acceptMessages);
+
+      setValue("acceptMessages", Boolean(!acceptMessages));
       toast({
         title: response.data.message,
         variant: "default",
       });
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
+
       toast({
         title: "Error",
         description:

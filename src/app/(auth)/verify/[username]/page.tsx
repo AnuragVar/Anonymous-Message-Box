@@ -33,8 +33,6 @@ export default function VerifyAccount() {
         username: params.username,
         code: data.code,
       });
-      console.log(response);
-
       toast({
         title: "Success",
         description: response.data.message,
@@ -43,6 +41,8 @@ export default function VerifyAccount() {
       router.replace("/sign-in");
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
+      console.log(axiosError);
+
       toast({
         title: "Verification Failed",
         description:

@@ -8,8 +8,8 @@ import NavBar from "@/components/NavBar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "True Feedback",
-  description: "Real feedback from real people.",
+  title: "Speak Secrets",
+  description: "Where your identity remains a secret.",
 };
 
 interface RootLayoutProps {

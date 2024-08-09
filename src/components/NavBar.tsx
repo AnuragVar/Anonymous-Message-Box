@@ -11,13 +11,13 @@ function NavBar() {
   const user: User = session?.user as User;
 
   return (
-    <nav className="p-4 md:p-6 shadow-md bg-[#1A3636] text-white">
+    <nav className="p-4 md:p-6 shadow-md bg-[#49243E] text-white">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         <a href="/" className="text-xl font-bold mb-4 md:mb-0 uppercase">
           Speak Secrets
         </a>
         {session ? (
-          <>
+          <div>
             <span className="mr-4">Welcome, {user.username || user.email}</span>
             <Button
               onClick={() => signOut()}
@@ -26,7 +26,7 @@ function NavBar() {
             >
               Logout
             </Button>
-          </>
+          </div>
         ) : (
           <Link href="/sign-in">
             <Button

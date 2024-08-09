@@ -1,6 +1,17 @@
-import { resend } from "../lib/resend";
-import VerificationEmail from "../../emails/VerificationEmail";
 import { ApiResponse } from "@/types/ApiResponse";
+import { render } from "@react-email/components";
+import VerificationEmail from "../../emails/VerificationEmail";
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // use false for STARTTLS; true for SSL on port 465
+  auth: {
+    user: "thesecretspeak@gmail.com",
+    pass: "buqn opde ywpj cvbt",
+  },
+});
 
 export async function sendVerificationEmail(
   username: string,
@@ -8,19 +19,22 @@ export async function sendVerificationEmail(
   verifyCode: string
 ): Promise<ApiResponse> {
   try {
-    console.log(email);
+    // Render the React component to an HTML string within the function
+    const emailHtml = render(VerificationEmail({ username, otp: verifyCode }));
 
-    const res = await resend.emails.send({
-      from: "onboarding@resend.dev",
+    const res = await transporter.sendMail({
+      from: "thesecretspeak@gmail.com",
       to: email,
       subject: "Mystry message | Verification Code",
-      react: VerificationEmail({ username, otp: verifyCode }),
+      html: emailHtml,
     });
-    console.log(res);
 
-    return { success: true, message: "Verification Emails has been sent" };
+    return {
+      success: true,
+      message: `Verification Email has been sent. ID: ${res.messageId}`,
+    };
   } catch (error) {
-    console.log("Something wrong happens while mailing", error);
-    return { success: false, message: "Verification Emails has not been sent" };
+    console.log("Something went wrong while sending the email", error);
+    return { success: false, message: "Verification Email has not been sent" };
   }
 }

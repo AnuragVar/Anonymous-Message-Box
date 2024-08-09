@@ -69,11 +69,11 @@ function page() {
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
     try {
-      const resposne = await axios.post<ApiResponse>("/api/sign-up", data);
+      const response = await axios.post<ApiResponse>("/api/sign-up", data);
       //todo: find from where we are getting this data
       toast({
         title: "Success",
-        description: resposne.data.message,
+        description: response.data.message,
       });
       router.replace(`/verify/${username}`);
     } catch (error) {
@@ -91,7 +91,7 @@ function page() {
     }
   };
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#40534C] text-[#1A3636]">
+    <div className="flex justify-center items-center min-h-screen bg-[#ebcdf1] text-[#522258]">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="flex flex-col justify-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6 text-center ">
@@ -168,7 +168,7 @@ function page() {
               <Button
                 disabled={isSubmitting}
                 type="submit"
-                className="bg-[#1A3636]"
+                className="bg-[#522258]"
               >
                 {isSubmitting ? (
                   <>

@@ -31,8 +31,11 @@ const parseStringMessages = (messageString: string): string[] => {
   return messageString.split(specialChar);
 };
 
-const initialMessageString =
-  "What's your favorite movie?||Do you have any pets?||What's your dream job?";
+const initialMessageString = [
+  "What's your favorite movie?",
+  "Do you have any pets?",
+  "What's your dream job?",
+];
 
 export default function SendMessage() {
   const params = useParams<{ username: string }>();
@@ -47,6 +50,7 @@ export default function SendMessage() {
     api: "/api/suggest-messages",
     initialCompletion: initialMessageString,
   });
+  const [suggestions, setSuggestions] = useState(initialMessageString);
 
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema),
@@ -88,10 +92,13 @@ export default function SendMessage() {
 
   const fetchSuggestedMessages = async () => {
     try {
-      complete("");
+      const response = await axios.post("/api/suggest-messages");
+      setSuggestions(response.data.data);
+
+      // Handle the received data (e.g., update state, display on UI)
     } catch (error) {
       console.error("Error fetching messages:", error);
-      // Handle error appropriately
+      // Handle error appropriately (e.g., show error message to user)
     }
   };
 
@@ -153,7 +160,7 @@ export default function SendMessage() {
             {error ? (
               <p className="text-red-500">{error.message}</p>
             ) : (
-              parseStringMessages(completion).map((message, index) => (
+              suggestions.map((message, index) => (
                 <Button
                   key={index}
                   variant="outline"
@@ -171,7 +178,7 @@ export default function SendMessage() {
       <div className="text-center">
         <div className="mb-4">Get Your Message Board</div>
         <Link href={"/sign-up"}>
-          <Button>Create Your Account</Button>
+          <Button>Create Your Own Account</Button>
         </Link>
       </div>
     </div>

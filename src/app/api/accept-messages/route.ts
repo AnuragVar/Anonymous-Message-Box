@@ -10,14 +10,13 @@ export async function POST(request: Request) {
 
   try {
     const session = await getServerSession(authOptions);
-    console.log(session);
-
+    
     const user: User = session?.user as User;
 
     if (!session || !user) {
       return Response.json(
         {
-          success: "False",
+          success: false,
           message: "User is not Authenticated",
         },
         { status: 401 }
@@ -26,19 +25,19 @@ export async function POST(request: Request) {
 
     const userId = user._id;
     const acceptMessages = await request.json();
+   
 
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       {
-        isAcceptingMessage: acceptMessages,
+        isAcceptingMessage: acceptMessages.acceptMessages,
       },
       { new: true }
     );
-
     if (!updatedUser) {
       return Response.json(
         {
-          success: "False",
+          success: false,
           message: "User status to accept messages is not yet updated!!",
         },
         { status: 401 }
@@ -47,7 +46,7 @@ export async function POST(request: Request) {
 
     return Response.json(
       {
-        success: "True",
+        success: true,
         message: "User status to accept messages is successfully updated!!",
       },
       { status: 200 }
@@ -57,7 +56,7 @@ export async function POST(request: Request) {
 
     return Response.json(
       {
-        success: "False",
+        success: false,
         message: "Failed to update user status to accept messages!! ",
       },
       { status: 500 }
@@ -72,27 +71,28 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     const user: User = session?.user as User;
-
+   
     if (!session || !user) {
       return Response.json(
         {
-          success: "False",
+          success: false,
           message: "User is not Authenticated",
         },
         { status: 401 }
       );
     }
-
+   
     const userId = user._id;
 
     const foundUser = await UserModel.findOne({
       _id: userId,
     });
 
+   
     if (!foundUser) {
       return Response.json(
         {
-          success: "False",
+          success: false,
           message: "User not found!!",
         },
         { status: 404 }
@@ -101,7 +101,7 @@ export async function GET(request: Request) {
 
     return Response.json(
       {
-        success: "True",
+        success: true,
         message: "User found successfully!!",
         isAcceptingMessages: foundUser.isAcceptingMessage,
       },
@@ -112,7 +112,7 @@ export async function GET(request: Request) {
 
     return Response.json(
       {
-        success: "False",
+        success: false,
         message: "Error in getting accepting Message status",
       },
       { status: 500 }

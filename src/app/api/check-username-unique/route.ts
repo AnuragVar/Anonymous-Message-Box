@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   // if (request.method != "GET") {
   //   return Response.json(
   //     {
-  //       success: "false",
+  //       success: false,
   //       message: "Only GET Request is allowed!!",
   //     },
   //     {
@@ -22,27 +22,20 @@ export async function GET(request: Request) {
   await dbConnect();
   try {
     const { searchParams } = new URL(request.url);
-    // console.log(searchParams);
-    // console.log('hi');
     
 
     const queryParams = {
       username: searchParams.get("username"),
     };
-    // console.log(queryParams.username);
 
     const result = UsernamequerySchema.safeParse(queryParams);
-
-    // console.log(result);
 
     if (!result.success) {
       const usernameErrors = result.error.format().username?._errors || [];
 
-      console.log(usernameErrors);
-
       return Response.json(
         {
-          success: "false",
+          success: false,
           message:
             usernameErrors.length > 0
               ? usernameErrors.join(",")
@@ -58,12 +51,12 @@ export async function GET(request: Request) {
 
     const existingVerifiedUser = await UserModel.findOne({
       username,
-      isVerified: "true",
+      isVerified: true,
     });
     if (existingVerifiedUser) {
       return Response.json(
         {
-          success: "false",
+          success: false,
           message: "Username is already taken",
         },
         {
@@ -74,7 +67,7 @@ export async function GET(request: Request) {
 
     return Response.json(
       {
-        success: "true",
+        success: true,
         message: "Username is unique",
       },
       {
@@ -85,7 +78,7 @@ export async function GET(request: Request) {
     console.log("Error while checking uniqueness of username ", error);
     return Response.json(
       {
-        success: "false",
+        success: false,
         message: "Error while checking uniqueness of username",
       },
       {
