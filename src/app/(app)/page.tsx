@@ -31,7 +31,8 @@ export default function Home() {
         </section>
 
         {/* Carousel for Messages */}
-        <Carousel
+        <Carousel 
+        //@ts-ignore
           plugins={[Autoplay({ delay: 2000 })]}
           className="w-full max-w-lg md:max-w-xl"
         >
