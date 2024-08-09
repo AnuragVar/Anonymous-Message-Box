@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   secure: false, // use false for STARTTLS; true for SSL on port 465
   auth: {
     user: "thesecretspeak@gmail.com",
-    pass: "buqn opde ywpj cvbt",
+    pass: process.env.PASS_KEY,
   },
 });
 
